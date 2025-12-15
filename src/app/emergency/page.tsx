@@ -35,14 +35,14 @@ export default function EmergencyPage() {
     <div className="px-4 sm:px-6">
   <div className="w-full max-w-md mx-auto mt-6 bg-white p-5 sm:p-6 rounded-xl shadow-lg">
     
-    <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-center sm:text-left">
+    <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-center sm:text-left text-black">
       Emergency Request
     </h2>
 
     <select
       value={bloodGroup}
       onChange={(e) => setBloodGroup(e.target.value)}
-      className="w-full p-3 border rounded-lg mb-4 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-red-500"
+      className="w-full p-3 border rounded-lg mb-4 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-red-500 "
     >
       {["A+","A-","B+","B-","O+","O-","AB+","AB-"].map(b => (
         <option key={b}>{b}</option>

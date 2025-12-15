@@ -26,9 +26,15 @@ export default function MapPage() {
   }, []);
 
   return (
-    <div>
-      <h2 className="text-2xl mb-4">Live Map</h2>
-      <MapComponent markers={markers} />
-    </div>
+    <div className="px-4 sm:px-6 py-6">
+  <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-center sm:text-left">
+    Live Map
+  </h2>
+
+  <div className="w-full h-[60vh] sm:h-[70vh] lg:h-[80vh] rounded-xl overflow-hidden shadow">
+    <MapComponent markers={markers} />
+  </div>
+</div>
+
   );
 }
