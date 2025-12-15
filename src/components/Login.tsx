@@ -4,16 +4,15 @@ import Link from "next/link";
 import { useState } from "react";
 import axios from "axios";
 
-const Login = () => {
+export default function Login() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-
   const [error, setError] = useState("");
 
   const handleSubmit = async () => {
-    setError(""); // reset first
+    setError("");
 
     if (!formData.email || !formData.password) {
       setError("Email and password are required");
@@ -22,11 +21,9 @@ const Login = () => {
 
     try {
       const res = await axios.post("/api/login", formData);
-
       if (res.status === 200) {
         setError("Login successful!");
       }
-
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setError(error.response?.data?.message || "Something went wrong");
@@ -35,60 +32,61 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="bg-white w-1/3 flex justify-center items-center flex-col py-10 rounded-2xl shadow-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-white px-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
         
-        <div className="py-5 text-left">
-          <p className="text-gray-300 text-sm">Login Here</p>
-          <h1 className="text-4xl">Login</h1>
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h1 className="text-3xl font-bold text-red-600">Rapid Rescuers</h1>
+          <p className="text-gray-500 text-sm mt-1">
+            Login to save lives faster
+          </p>
         </div>
 
-        {error && <p className="text-red-600">{error}</p>}
+        {error && (
+          <div className="bg-red-100 text-red-600 text-sm p-3 rounded-md mb-4">
+            {error}
+          </div>
+        )}
 
-        <div className="w-full px-5 flex gap-4 flex-col py-2">
-
-          {/* Email */}
+        {/* Form */}
+        <div className="space-y-4">
           <input
+            type="email"
+            placeholder="Email address"
+            value={formData.email}
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
             }
-            value={formData.email}
-            className="w-full focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-100 py-2 px-2 rounded-md"
-            type="email"
-            placeholder="email"
+            className="w-full px-4 py-3 rounded-lg bg-gray-100 focus:ring-2 focus:ring-red-400 focus:outline-none"
           />
 
-          {/* Password */}
           <input
+            type="password"
+            placeholder="Password"
+            value={formData.password}
             onChange={(e) =>
               setFormData({ ...formData, password: e.target.value })
             }
-            value={formData.password}
-            className="w-full focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-100 py-2 px-2 rounded-md"
-            type="password"
-            placeholder="password"
+            className="w-full px-4 py-3 rounded-lg bg-gray-100 focus:ring-2 focus:ring-red-400 focus:outline-none"
           />
 
-          {/* Button */}
           <button
             onClick={handleSubmit}
-            className="bg-blue-600 text-white w-full py-2 px-2 rounded-md cursor-pointer"
+            className="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition"
           >
             Login
           </button>
-
-          {/* Link */}
-          <p className="text-sm text-gray-600">
-            Don’t have an account?{" "}
-            <Link href="/" className="text-blue-600 cursor-pointer">
-              Signup
-            </Link>
-          </p>
-
         </div>
+
+        {/* Footer */}
+        <p className="text-sm text-center text-gray-600 mt-6">
+          Don’t have an account?{" "}
+          <Link href="/auth/signup" className="text-red-600 font-medium hover:underline">
+            Signup
+          </Link>
+        </p>
       </div>
     </div>
   );
-};
-
-export default Login;
+}
