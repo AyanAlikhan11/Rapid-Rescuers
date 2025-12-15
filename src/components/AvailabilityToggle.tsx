@@ -115,7 +115,7 @@ export default function AvailabilityToggle() {
       onClick={toggle}
       disabled={loading}
       className={`px-4 py-2 rounded transition ${
-        avail ? "bg-green-600 text-white" : "bg-gray-200"
+        avail ? "bg-green-600 text-white" : "bg-gray-500"
       }`}
     >
       {loading ? "..." : avail ? "Available" : "Set Available"}

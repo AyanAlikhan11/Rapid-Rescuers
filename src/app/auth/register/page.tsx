@@ -50,18 +50,68 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="max-w-md mx-auto bg-white p-6 rounded shadow">
-      <h2 className="text-2xl mb-4">Become a Donor</h2>
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <input required placeholder="Name" value={form.name} onChange={(e)=>setForm({...form,name:e.target.value})} className="w-full border p-2 rounded" />
-        <input required placeholder="Phone" value={form.phone} onChange={(e)=>setForm({...form,phone:e.target.value})} className="w-full border p-2 rounded" />
-        <input required placeholder="Email" value={form.email} onChange={(e)=>setForm({...form,email:e.target.value})} className="w-full border p-2 rounded" />
-        <select value={form.bloodGroup} onChange={(e)=>setForm({...form,bloodGroup:e.target.value})} className="w-full border p-2 rounded">
-          {["A+","A-","B+","B-","O+","O-","AB+","AB-"].map(b=> <option key={b}>{b}</option>)}
-        </select>
-        <input required placeholder="Password" type="password" value={form.password} onChange={(e)=>setForm({...form,password:e.target.value})} className="w-full border p-2 rounded" />
-        <button disabled={loading} className="w-full py-2 bg-red-600 text-white rounded">{loading ? "Registering..." : "Register"}</button>
-      </form>
-    </div>
+    <div className="min-h-screen flex items-start justify-center px-4 sm:px-6">
+  <div className="w-full max-w-md bg-white p-5 sm:p-6 rounded-xl shadow-lg mt-16 sm:mt-20">
+    
+    <h2 className="text-xl sm:text-2xl font-semibold text-black mb-4 text-center">
+      Become a Donor
+    </h2>
+
+    <form onSubmit={handleSubmit} className="space-y-3 text-black">
+      
+      <input
+        required
+        placeholder="Name"
+        value={form.name}
+        onChange={(e) => setForm({ ...form, name: e.target.value })}
+        className="w-full border p-3 rounded-lg text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-red-500"
+      />
+
+      <input
+        required
+        placeholder="Phone"
+        value={form.phone}
+        onChange={(e) => setForm({ ...form, phone: e.target.value })}
+        className="w-full border p-3 rounded-lg text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-red-500"
+      />
+
+      <input
+        required
+        placeholder="Email"
+        value={form.email}
+        onChange={(e) => setForm({ ...form, email: e.target.value })}
+        className="w-full border p-3 rounded-lg text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-red-500"
+      />
+
+      <select
+        value={form.bloodGroup}
+        onChange={(e) => setForm({ ...form, bloodGroup: e.target.value })}
+        className="w-full border p-3 rounded-lg text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-red-500"
+      >
+        {["A+","A-","B+","B-","O+","O-","AB+","AB-"].map(b => (
+          <option key={b}>{b}</option>
+        ))}
+      </select>
+
+      <input
+        required
+        placeholder="Password"
+        type="password"
+        value={form.password}
+        onChange={(e) => setForm({ ...form, password: e.target.value })}
+        className="w-full border p-3 rounded-lg text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-red-500"
+      />
+
+      <button
+        disabled={loading}
+        className="w-full py-3 bg-red-600 text-white rounded-lg text-sm sm:text-base font-medium hover:bg-red-700 transition disabled:opacity-60"
+      >
+        {loading ? "Registering..." : "Register"}
+      </button>
+
+    </form>
+  </div>
+</div>
+
   );
 }

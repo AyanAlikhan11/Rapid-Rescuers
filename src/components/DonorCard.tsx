@@ -27,7 +27,7 @@ export default function DonorCard({
       <div className="flex-1">
         <div className="flex justify-between items-baseline">
           <h3 className="font-semibold">{donor.name}</h3>
-          <span className="text-xs text-gray-500">{donor.bloodGroup}</span>
+          <span className="text-xs text-gray-700">{donor.bloodGroup}</span>
         </div>
         <p className="text-sm text-gray-600">{donor.phone ?? "No phone"}</p>
         {donor.distanceKm != null && <p className="text-xs text-gray-500 mt-1">{donor.distanceKm.toFixed(1)} km away</p>}
