@@ -2,54 +2,134 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import axios from "axios";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, db, googleProvider } from "@/lib/firebase";
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { useRouter } from "next/navigation";
 
-export default function Login() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+// Role-based routes
+const ROLE_ROUTES: Record<string, string> = {
+  user: "/dashboard",
+  donor: "/donor/dashboard",
+  hospital: "/hospital/dashboard",
+  admin: "/admin/dashboard",
+};
+
+export default function LoginPage() {
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async () => {
-    setError("");
+  const router = useRouter();
 
+  // 🔑 Email/Password login
+  const handleEmailLogin = async () => {
+    setError("");
     if (!formData.email || !formData.password) {
       setError("Email and password are required");
       return;
     }
 
+    setLoading(true);
     try {
-      const res = await axios.post("/api/login", formData);
-      if (res.status === 200) {
-        setError("Login successful!");
+      const cred = await signInWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+
+      const userRef = doc(db, "users", cred.user.uid);
+      const snap = await getDoc(userRef);
+
+      if (!snap.exists()) throw new Error("User profile not found");
+
+      await setDoc(
+        userRef,
+        { lastLogin: serverTimestamp() },
+        { merge: true }
+      );
+
+      const data = snap.data();
+      const role = typeof data?.role === "string" ? data.role : null;
+
+      if (!role) router.push("/select-role");
+      else router.push(ROLE_ROUTES[role] || "/dashboard");
+    } catch (err: unknown) {
+      if (err instanceof Error) setError(err.message);
+      else setError("Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔑 Google login
+  const handleGoogleAuth = async () => {
+    setError("");
+    setLoading(true);
+
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+
+      const userRef = doc(db, "users", user.uid);
+      const snap = await getDoc(userRef);
+
+      // New Google user → create profile
+      if (!snap.exists()) {
+        await setDoc(userRef, {
+          uid: user.uid,
+          name: user.displayName ?? "",
+          email: user.email ?? "",
+          role: null,
+          provider: "google",
+          createdAt: serverTimestamp(),
+          lastLogin: serverTimestamp(),
+        });
+        router.push("/select-role");
+        return;
       }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data?.message || "Something went wrong");
-      }
+
+      // Existing user → update last login
+      await setDoc(
+        userRef,
+        { lastLogin: serverTimestamp() },
+        { merge: true }
+      );
+
+      const data = snap.data();
+      const role = typeof data?.role === "string" ? data.role : null;
+
+      if (!role) router.push("/select-role");
+      else router.push(ROLE_ROUTES[role] || "/dashboard");
+    } catch (err: unknown) {
+      if (err instanceof Error) setError(err.message);
+      else setError("Google authentication failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-white px-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
-        
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 via-white to-red-50 px-4">
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8">
+
         {/* Header */}
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-red-600">Rapid Rescuers</h1>
-          <p className="text-gray-500 text-sm mt-1">
-            Login to save lives faster
-          </p>
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 mx-auto flex items-center justify-center rounded-full bg-red-600 text-white text-xl font-bold">
+            RR
+          </div>
+          <h1 className="text-3xl font-bold text-gray-800 mt-4">Welcome Back</h1>
+          <p className="text-gray-500 text-sm mt-1">Login to Rapid Rescuers</p>
         </div>
 
+        {/* Error */}
         {error && (
-          <div className="bg-red-100 text-red-600 text-sm p-3 rounded-md mb-4">
+          <div className="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-lg mb-5">
             {error}
           </div>
         )}
 
-        {/* Form */}
+        {/* Email/Password Form */}
         <div className="space-y-4">
           <input
             type="email"
@@ -58,9 +138,8 @@ export default function Login() {
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
             }
-            className="w-full px-4 py-3 rounded-lg bg-gray-100 focus:ring-2 focus:ring-red-400 focus:outline-none"
+            className="w-full px-4 py-3 rounded-xl bg-gray-100 focus:ring-2 focus:ring-red-500 focus:outline-none"
           />
-
           <input
             type="password"
             placeholder="Password"
@@ -68,22 +147,47 @@ export default function Login() {
             onChange={(e) =>
               setFormData({ ...formData, password: e.target.value })
             }
-            className="w-full px-4 py-3 rounded-lg bg-gray-100 focus:ring-2 focus:ring-red-400 focus:outline-none"
+            className="w-full px-4 py-3 rounded-xl bg-gray-100 focus:ring-2 focus:ring-red-500 focus:outline-none"
           />
 
           <button
-            onClick={handleSubmit}
-            className="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition"
+            onClick={handleEmailLogin}
+            disabled={loading}
+            className={`w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-semibold transition
+              ${loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
           >
-            Login
+            {loading ? "Signing in..." : "Login"}
           </button>
         </div>
+
+        {/* Divider */}
+        <div className="flex items-center gap-4 my-6">
+          <div className="flex-1 h-px bg-gray-200"></div>
+          <span className="text-gray-400 text-sm">or</span>
+          <div className="flex-1 h-px bg-gray-200"></div>
+        </div>
+
+        {/* Google Login Button */}
+        <button
+          onClick={handleGoogleAuth}
+          disabled={loading}
+          className={`w-full flex items-center justify-center gap-3 border border-gray-300 py-3 rounded-xl
+            transition ${loading ? "opacity-60 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"}`}
+        >
+          <img src="/google.svg" className="w-5 h-5" alt="Google logo" />
+          <span className="font-medium text-gray-700">
+            Continue with Google
+          </span>
+        </button>
 
         {/* Footer */}
         <p className="text-sm text-center text-gray-600 mt-6">
           Don’t have an account?{" "}
-          <Link href="/auth/signup" className="text-red-600 font-medium hover:underline">
-            Signup
+          <Link
+            href="/auth/signup"
+            className="text-red-600 font-semibold hover:underline"
+          >
+            Sign up
           </Link>
         </p>
       </div>
