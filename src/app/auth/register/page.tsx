@@ -41,9 +41,10 @@ export default function RegisterPage() {
 
       alert("Registered! Redirecting to donor dashboard.");
       router.push("/donor/dashboard");
-    } catch (err: any) {
-      console.error(err);
-      alert("Error: " + (err.message || err));
+    } catch (err) {
+  const error = err as Error;
+  console.error(error);
+  alert("Error: " + (error.message || error));
     } finally {
       setLoading(false);
     }
