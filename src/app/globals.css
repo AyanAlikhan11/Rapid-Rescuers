@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -14,10 +15,10 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #f9bbbb;
+    --background: #ebcccc;
     --foreground: #000000;
   }
-}
+} 
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -43,6 +44,25 @@
 .animation-delay-300 {
   animation-delay: 0.3s;
 }
+.nav-link {
+  @apply text-sm font-medium text-gray-700 hover:text-red-600 transition relative;
+}
+
+.btn-primary {
+  @apply px-4 py-2 rounded-lg bg-red-600 text-white text-sm
+         hover:bg-red-700 transition shadow;
+}
+
+.btn-outline {
+  @apply px-4 py-2 rounded-lg border border-red-600 text-red-600
+         hover:bg-red-50 transition;
+}
+
+.btn-danger {
+  @apply px-4 py-2 rounded-lg bg-gray-800 text-white
+         hover:bg-black transition;
+}
+
 
 body {
   background: var(--background);

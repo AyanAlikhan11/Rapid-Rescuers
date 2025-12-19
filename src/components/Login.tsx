@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+
 import { useState } from "react";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, db, googleProvider } from "@/lib/firebase";
@@ -174,7 +176,9 @@ export default function LoginPage() {
           className={`w-full flex items-center justify-center gap-3 border border-gray-300 py-3 rounded-xl
             transition ${loading ? "opacity-60 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"}`}
         >
-          <img src="/google.svg" className="w-5 h-5" alt="Google logo" />
+          <Image src="/google.svg"alt="Google logo"width={20}height={20}
+            className="w-5 h-5"/>
+
           <span className="font-medium text-gray-700">
             Continue with Google
           </span>

@@ -1,5 +1,5 @@
 // /app/page.tsx
-import Link from "next/link";
+
 import Footer from "@/components/Footer";
 import Herosection from "@/components/Herosection";
 import Navbar from "@/components/Navbar";
