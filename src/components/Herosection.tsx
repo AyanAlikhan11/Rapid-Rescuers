@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
+import Snowfall from "react-snowfall";
 
 export default function HeroSection() {
   const router = useRouter();
@@ -34,7 +35,7 @@ export default function HeroSection() {
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-white to-red-50 py-24 px-4">
-
+        <Snowfall color="red"/>
       {/* Decorative blobs */}
       <div className="absolute -top-24 -left-24 w-96 h-96 bg-red-200/40 rounded-full blur-3xl" />
       <div className="absolute top-20 -right-24 w-96 h-96 bg-red-300/30 rounded-full blur-3xl" />

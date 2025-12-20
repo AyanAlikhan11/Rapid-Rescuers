@@ -2,31 +2,36 @@
 
 import Link from "next/link";
 import Image from "next/image";
-
 import { useState } from "react";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, db, googleProvider } from "@/lib/firebase";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 
-// Role-based routes
+/* 🔁 CENTRAL ROLE → DASHBOARD ROUTES */
 const ROLE_ROUTES: Record<string, string> = {
-  user: "/dashboard",
-  donor: "/donor/dashboard",
-  hospital: "/hospital/dashboard",
-  admin: "/admin/dashboard",
+  user: "/dashboard/user",
+  donor: "/dashboard/donor",
+  hospital: "/dashboard/hospital",
+  admin: "/dashboard/admin",
 };
 
 export default function LoginPage() {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const router = useRouter();
 
-  // 🔑 Email/Password login
+  /* =======================
+     EMAIL / PASSWORD LOGIN
+     ======================= */
   const handleEmailLogin = async () => {
     setError("");
+
     if (!formData.email || !formData.password) {
       setError("Email and password are required");
       return;
@@ -43,8 +48,11 @@ export default function LoginPage() {
       const userRef = doc(db, "users", cred.user.uid);
       const snap = await getDoc(userRef);
 
-      if (!snap.exists()) throw new Error("User profile not found");
+      if (!snap.exists()) {
+        throw new Error("User profile not found");
+      }
 
+      // update last login
       await setDoc(
         userRef,
         { lastLogin: serverTimestamp() },
@@ -54,18 +62,22 @@ export default function LoginPage() {
       const data = snap.data();
       const role = typeof data?.role === "string" ? data.role : null;
 
-      if (!role) router.push("/select-role");
-      else router.push(ROLE_ROUTES[role] || "/dashboard");
+      if (!role) {
+        router.push("/select-role");
+      } else {
+        router.push(ROLE_ROUTES[role] || "/dashboard");
+      }
     } catch (err: unknown) {
-      if (err instanceof Error) setError(err.message);
-      else setError("Login failed");
+      setError(err instanceof Error ? err.message : "Login failed");
     } finally {
       setLoading(false);
     }
   };
 
-  // 🔑 Google login
-  const handleGoogleAuth = async () => {
+  /* =======================
+        GOOGLE LOGIN
+     ======================= */
+  const handleGoogleLogin = async () => {
     setError("");
     setLoading(true);
 
@@ -76,7 +88,7 @@ export default function LoginPage() {
       const userRef = doc(db, "users", user.uid);
       const snap = await getDoc(userRef);
 
-      // New Google user → create profile
+      // New Google user
       if (!snap.exists()) {
         await setDoc(userRef, {
           uid: user.uid,
@@ -87,11 +99,12 @@ export default function LoginPage() {
           createdAt: serverTimestamp(),
           lastLogin: serverTimestamp(),
         });
+
         router.push("/select-role");
         return;
       }
 
-      // Existing user → update last login
+      // Existing user
       await setDoc(
         userRef,
         { lastLogin: serverTimestamp() },
@@ -101,11 +114,13 @@ export default function LoginPage() {
       const data = snap.data();
       const role = typeof data?.role === "string" ? data.role : null;
 
-      if (!role) router.push("/select-role");
-      else router.push(ROLE_ROUTES[role] || "/dashboard");
+      if (!role) {
+        router.push("/select-role");
+      } else {
+        router.push(ROLE_ROUTES[role] || "/dashboard");
+      }
     } catch (err: unknown) {
-      if (err instanceof Error) setError(err.message);
-      else setError("Google authentication failed");
+      setError(err instanceof Error ? err.message : "Google login failed");
     } finally {
       setLoading(false);
     }
@@ -120,8 +135,12 @@ export default function LoginPage() {
           <div className="w-14 h-14 mx-auto flex items-center justify-center rounded-full bg-red-600 text-white text-xl font-bold">
             RR
           </div>
-          <h1 className="text-3xl font-bold text-gray-800 mt-4">Welcome Back</h1>
-          <p className="text-gray-500 text-sm mt-1">Login to Rapid Rescuers</p>
+          <h1 className="text-3xl font-bold text-gray-800 mt-4">
+            Welcome Back
+          </h1>
+          <p className="text-gray-500 text-sm mt-1">
+            Login to Rapid Rescuers
+          </p>
         </div>
 
         {/* Error */}
@@ -131,7 +150,7 @@ export default function LoginPage() {
           </div>
         )}
 
-        {/* Email/Password Form */}
+        {/* Email Login */}
         <div className="space-y-4">
           <input
             type="email"
@@ -142,6 +161,7 @@ export default function LoginPage() {
             }
             className="w-full px-4 py-3 rounded-xl bg-gray-100 focus:ring-2 focus:ring-red-500 focus:outline-none"
           />
+
           <input
             type="password"
             placeholder="Password"
@@ -156,7 +176,7 @@ export default function LoginPage() {
             onClick={handleEmailLogin}
             disabled={loading}
             className={`w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-semibold transition
-              ${loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
+              ${loading ? "opacity-60 cursor-not-allowed" : ""}`}
           >
             {loading ? "Signing in..." : "Login"}
           </button>
@@ -169,16 +189,14 @@ export default function LoginPage() {
           <div className="flex-1 h-px bg-gray-200"></div>
         </div>
 
-        {/* Google Login Button */}
+        {/* Google Login */}
         <button
-          onClick={handleGoogleAuth}
+          onClick={handleGoogleLogin}
           disabled={loading}
-          className={`w-full flex items-center justify-center gap-3 border border-gray-300 py-3 rounded-xl
-            transition ${loading ? "opacity-60 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"}`}
+          className={`w-full flex items-center justify-center gap-3 border border-gray-300 py-3 rounded-xl transition
+            ${loading ? "opacity-60 cursor-not-allowed" : "hover:bg-gray-50"}`}
         >
-          <Image src="/google.svg"alt="Google logo"width={20}height={20}
-            className="w-5 h-5"/>
-
+          <Image src="/google.svg" alt="Google" width={20} height={20} />
           <span className="font-medium text-gray-700">
             Continue with Google
           </span>

@@ -1,19 +1,37 @@
-import { Timestamp } from "firebase/firestore";
+// import { serverTimestamp, Timestamp } from "firebase/firestore";
+
+// export type BloodGroup =
+// | "A+" | "A-" | "B+" | "B-"
+// | "O+" | "O-" | "AB+" | "AB-";
+
+// export type BloodStock = Record<BloodGroup, number>;
+
+// export interface Hospital {
+// id: string;
+// name: string;
+// address: string;
+// location: null | { lat: number; lng: number };
+// bloodStock: BloodStock;
+// createdAt?: Timestamp;
+
+// }
 
 
-export type BloodGroup =
-| "A+" | "A-" | "B+" | "B-"
-| "O+" | "O-" | "AB+" | "AB-";
-
-
-export type BloodStock = Record<BloodGroup, number>;
-
+import { Timestamp, FieldValue } from "firebase/firestore";
 
 export interface Hospital {
-id: string;
-name: string;
-address: string;
-location: null | { lat: number; lng: number };
-bloodStock: BloodStock;
-createdAt?: Timestamp;
+  id: string;
+  name: string;
+  address: string;
+  location: null | { lat: number; lng: number };
+  bloodStock: BloodStock;
+  createdAt?: Timestamp | FieldValue;
 }
+
+export type BloodGroup =
+  | "A+" | "A-"
+  | "B+" | "B-"
+  | "O+" | "O-"
+  | "AB+" | "AB-";
+
+export type BloodStock = Record<BloodGroup, number>;

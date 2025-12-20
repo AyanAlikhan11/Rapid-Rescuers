@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 
 export default function Signup() {
   const [form, setForm] = useState({
+    name: "",
     email: "",
     password: "",
     confirm: "",
@@ -23,6 +24,11 @@ export default function Signup() {
 
   const handleSubmit = async () => {
     setError("");
+    
+    if (!form.name.trim()) {
+      setError("Name is required");
+      return;
+    }
 
     if (!form.email || !form.password || !form.confirm) {
       setError("All fields are required");
@@ -110,6 +116,17 @@ export default function Signup() {
 
         <div className="space-y-3">
           <input
+            type="text"
+            placeholder={
+              form.role === "hospital" ? "Hospital Name" : "Username"
+            }
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            className="w-full px-4 py-3 rounded-lg bg-gray-100
+             focus:ring-2 focus:ring-red-400 focus:outline-none"
+          />
+
+          <input
             type="email"
             placeholder="Email"
             value={form.email}
@@ -155,9 +172,7 @@ export default function Signup() {
           {form.role === "donor" && (
             <select
               value={form.bloodGroup}
-              onChange={(e) =>
-                setForm({ ...form, bloodGroup: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, bloodGroup: e.target.value })}
               className="w-full px-4 py-3 rounded-lg bg-gray-100 focus:ring-2 focus:ring-red-400 focus:outline-none"
             >
               <option value="">Select Blood Group</option>
