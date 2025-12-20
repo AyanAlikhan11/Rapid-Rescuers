@@ -1,19 +1,28 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { db } from "../../../lib/firebase";
-import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
-import type { Hospital, BloodStock, BloodGroup } from "@/types/hospital";
-import { auth } from "../../../lib/firebase";
+import { auth, db } from "@/lib/firebase";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import { serverTimestamp } from "firebase/firestore";
-
+import type { BloodGroup, BloodStock, Hospital } from "@/types/hospital";
+import BloodStockChart from "@/components/charts/BloodStockChart";
+import RequestTrendChart from "@/components/charts/RequestTrendChart";
 
 const EMPTY_STOCK: BloodStock = {
-  "A+": 0, "A-": 0,
-  "B+": 0, "B-": 0,
-  "O+": 0, "O-": 0,
-  "AB+": 0, "AB-": 0,
+  "A+": 0,
+  "A-": 0,
+  "B+": 0,
+  "B-": 0,
+  "O+": 0,
+  "O-": 0,
+  "AB+": 0,
+  "AB-": 0,
 };
 
 export default function HospitalDashboardPage() {
@@ -21,108 +30,107 @@ export default function HospitalDashboardPage() {
   const [stock, setStock] = useState<BloodStock>(EMPTY_STOCK);
   const [saving, setSaving] = useState(false);
 
+  /* AUTH + DATA */
   useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, async (user) => {
-    if (!user) return;
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      if (!user) return;
 
-    const hospitalId = user.uid;
+      const ref = doc(db, "hospitals", user.uid);
+      const snap = await getDoc(ref);
 
-    const hospitalRef = doc(db, "hospitals", hospitalId);
-    const hospitalSnap = await getDoc(hospitalRef);
-
-    const userRef = doc(db, "users", hospitalId);
-    const userSnap = await getDoc(userRef);
-
-    const hospitalName =
-      userSnap.exists() && userSnap.data().name
-        ? userSnap.data().name
-        : "Unnamed Hospital";
-
-    if (hospitalSnap.exists()) {
-      const data = hospitalSnap.data() as Hospital;
-
-      // 🔥 FIX old data if name was wrong
-      if (data.name !== hospitalName) {
-        await updateDoc(hospitalRef, { name: hospitalName });
-        data.name = hospitalName;
+      if (snap.exists()) {
+        const data = snap.data() as Hospital;
+        setHospital(data);
+        setStock(data.bloodStock ?? EMPTY_STOCK);
+      } else {
+        const newHospital: Hospital = {
+          id: user.uid,
+          name: user.displayName || "Hospital",
+          address: "",
+          location: null,
+          bloodStock: EMPTY_STOCK,
+          createdAt: serverTimestamp(),
+        };
+        await setDoc(ref, newHospital);
+        setHospital(newHospital);
       }
+    });
 
-      setHospital(data);
-      setStock(data.bloodStock ?? EMPTY_STOCK);
-    } else {
-      const newHospital: Hospital = {
-        id: hospitalId,
-        name: hospitalName,
-        address: "",
-        location: null,
-        bloodStock: EMPTY_STOCK,
-        createdAt: serverTimestamp(),
-      };
-
-      await setDoc(hospitalRef, newHospital);
-      setHospital(newHospital);
-      setStock(EMPTY_STOCK);
-    }
-  });
-
-  return () => unsubscribe();
-}, []);
-
-
+    return () => unsub();
+  }, []);
 
   async function saveStock() {
     if (!hospital) return;
     setSaving(true);
+
     await updateDoc(doc(db, "hospitals", hospital.id), {
       bloodStock: stock,
+      updatedAt: serverTimestamp(),
     });
+
     setSaving(false);
-    alert("Blood stock updated successfully");
+    alert("Blood stock updated successfully ✅");
   }
 
   if (!hospital) {
-    return <p className="p-6">Loading hospital dashboard...</p>;
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
+        Loading hospital dashboard...
+      </div>
+    );
   }
 
   return (
-    <div className="p-4 sm:p-6 space-y-8">
-      {/* Header */}
-      <div>
-        <h2 className="text-2xl font-bold text-green-600">
-          🏥 {hospital.name}
-        </h2>
-        <p className="text-sm text-gray-500">{hospital.address}</p>
-      </div>
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 space-y-8">
+      {/* HEADER */}
+      <header className="bg-white rounded-2xl shadow p-6 flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-green-700">
+            🏥 {hospital.name}
+          </h1>
+          <p className="text-gray-500 text-sm">Hospital Control Panel</p>
+        </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <DashboardCard title="Active Emergencies" value="3" color="red" />
-        <DashboardCard title="Available Beds" value="12" color="blue" />
-        <DashboardCard title="Ambulances" value="4" color="yellow" />
-        <DashboardCard title="Blood Requests" value="5" color="purple" />
-      </div>
+        <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-medium">
+          Active
+        </span>
+      </header>
 
-      {/* Blood Stock Section */}
+      {/* QUICK STATS */}
+      <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard title="Emergencies" value="3" color="red" />
+        <StatCard title="Available Beds" value="12" color="blue" />
+        <StatCard title="Ambulances" value="4" color="yellow" />
+        <StatCard title="Blood Requests" value="5" color="purple" />
+      </section>
+
+      {/* BLOOD STOCK */}
       <section className="bg-white rounded-2xl shadow p-6">
-        <h3 className="text-lg font-semibold mb-4 text-green-700">
-          🩸 Blood Stock Management
-        </h3>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-lg font-semibold text-green-700">
+            🩸 Blood Stock Management
+          </h2>
+          <span className="text-sm text-gray-500">Units available</span>
+        </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {(Object.keys(stock) as BloodGroup[]).map((key) => (
+          {(Object.keys(stock) as BloodGroup[]).map((group) => (
             <div
-              key={key}
-              className="border rounded-xl p-4 flex flex-col gap-2"
+              key={group}
+              className="border rounded-xl p-4 hover:shadow-md transition"
             >
-              <span className="font-semibold text-gray-700">{key}</span>
+              <p className="font-semibold text-gray-700">{group}</p>
               <input
                 type="number"
                 min={0}
-                value={stock[key]}
+                value={stock[group]}
                 onChange={(e) =>
-                  setStock({ ...stock, [key]: Number(e.target.value) })
+                  setStock({
+                    ...stock,
+                    [group]: Number(e.target.value),
+                  })
                 }
-                className="border rounded-lg p-2 focus:ring-2 focus:ring-green-500"
+                className="mt-2 w-full border rounded-lg p-2 focus:ring-2 focus:ring-green-500"
               />
             </div>
           ))}
@@ -131,71 +139,45 @@ export default function HospitalDashboardPage() {
         <button
           onClick={saveStock}
           disabled={saving}
-          className="mt-6 bg-green-600 text-white px-6 py-3 rounded-lg
-                     hover:bg-green-700 transition disabled:opacity-60"
+          className="mt-6 bg-green-600 text-white px-6 py-3 rounded-xl font-semibold
+                     hover:bg-green-700 transition active:scale-95 disabled:opacity-60"
         >
-          {saving ? "Saving..." : "Save Blood Stock"}
+          {saving ? "Saving..." : "Update Stock"}
         </button>
       </section>
-
-      {/* Emergency Requests Preview */}
-      <section className="bg-white rounded-2xl shadow p-6">
-        <h3 className="text-lg font-semibold mb-4 text-red-600">
-          🚨 Emergency Requests (Preview)
-        </h3>
-
-        <p className="text-gray-500 text-sm">
-          Incoming SOS requests will appear here with patient details,
-          blood group, severity, and action buttons.
-        </p>
-      </section>
-
-      {/* Resources Status */}
-      <section className="grid md:grid-cols-2 gap-6">
-        <ResourceCard title="🚑 Ambulance Status">
-          Available: 3 <br />
-          Busy: 1
-        </ResourceCard>
-
-        <ResourceCard title="🛏 Bed & ICU Status">
-          General Beds: 8 <br />
-          ICU Beds: 4
-        </ResourceCard>
+      {/* CHARTS */}
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <BloodStockChart stock={stock} />
+        <RequestTrendChart />
       </section>
     </div>
   );
 }
 
-/* Reusable Components */
+/* COMPONENTS */
 
-function DashboardCard({
+function StatCard({
   title,
   value,
   color,
 }: {
   title: string;
   value: string;
-  color: string;
+  color: "red" | "blue" | "yellow" | "purple";
 }) {
-  return (
-    <div className="bg-white p-4 rounded-xl shadow">
-      <p className="text-sm text-gray-500">{title}</p>
-      <p className={`text-2xl font-bold text-${color}-600`}>{value}</p>
-    </div>
-  );
-}
+  const colors = {
+    red: "text-red-600 bg-red-50",
+    blue: "text-blue-600 bg-blue-50",
+    yellow: "text-yellow-600 bg-yellow-50",
+    purple: "text-purple-600 bg-purple-50",
+  };
 
-function ResourceCard({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
   return (
-    <div className="bg-white p-6 rounded-2xl shadow">
-      <h4 className="font-semibold mb-2">{title}</h4>
-      <p className="text-sm text-gray-600">{children}</p>
+    <div
+      className={`rounded-2xl p-5 shadow hover:shadow-lg transition transform hover:-translate-y-1 ${colors[color]}`}
+    >
+      <p className="text-sm">{title}</p>
+      <p className="text-2xl font-bold mt-2">{value}</p>
     </div>
   );
 }

@@ -83,9 +83,9 @@ export default function Navbar() {
               <Link
                 href={
                   role === "donor"
-                    ? "/donor/dashboard"
+                    ? "/dashboard/donor"
                     : role === "hospital"
-                    ? "/hospital/dashboard"
+                    ? "/dashboard/hospital"
                     : role === "admin"
                     ? "/admin/dashboard"
                     : "/dashboard"
@@ -164,9 +164,9 @@ export default function Navbar() {
                   <Link
                     href={
                       role === "donor"
-                        ? "/donor/dashboard"
+                        ? "/dashboard/donor"
                         : role === "hospital"
-                        ? "/hospital/dashboard"
+                        ? "/dashboard/hospital"
                         : role === "admin"
                         ? "/admin/dashboard"
                         : "/dashboard"

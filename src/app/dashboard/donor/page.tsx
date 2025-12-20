@@ -7,16 +7,17 @@ import useGeoLocation from "@/hooks/useGeoLocation";
 import Link from "next/link";
 import AvailabilityToggle from "@/components/AvailabilityToggle";
 import { signOut } from "firebase/auth";
+import DonationChart from "@/components/charts/DonationChart";
 
 type DonorUser = {
-  name?: string;                 // ✅ optional
-  bloodGroup?: string;           // ✅ optional
-  availability?: boolean;        // ✅ optional
+  name?: string;
+  bloodGroup?: string;
+  availability?: boolean;
 };
 
 export default function DonorDashboardPage() {
   const [user, setUser] = useState<DonorUser | null>(null);
-  const [loading, setLoading] = useState(true); // ✅ loading state
+  const [loading, setLoading] = useState(true);
   const { location } = useGeoLocation();
 
   useEffect(() => {
@@ -36,91 +37,81 @@ export default function DonorDashboardPage() {
   }, []);
 
   useEffect(() => {
-    const updateLocation = async () => {
-      const u = auth.currentUser;
-      if (!u || !location) return;
-      await updateDoc(doc(db, "users", u.uid), { location });
-    };
-    updateLocation();
+    const u = auth.currentUser;
+    if (!u || !location) return;
+
+    updateDoc(doc(db, "users", u.uid), { location });
   }, [location]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Loading dashboard...</p>
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
+        Loading donor dashboard...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 sm:px-8 py-6">
-      {/* Top Header with Logo + Logout */}
-<div className="flex items-center justify-between mb-8 mt-4">
-  {/* Logo */}
-  <Link href="/" className="flex items-center gap-3 group">
-    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl 
-      bg-gradient-to-br from-red-600 to-red-400 
-      flex items-center justify-center text-white font-extrabold shadow-lg 
-      transition-transform duration-300 transform 
-      hover:scale-125 hover:rotate-12 hover:shadow-2xl">
-      RR
-    </div>
-    <span className="font-bold text-lg sm:text-xl transition-colors duration-300 group-hover:text-red-700">
-      Rapid Rescuers
-    </span>
-  </Link>
+    <div className="min-h-screen bg-gray-50 px-4 sm:px-8 py-6 space-y-8">
+      {/* TOP BAR */}
+      <div className="flex justify-between items-center">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div
+            className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-600 to-red-400
+                          flex items-center justify-center text-white font-bold shadow-lg
+                          group-hover:scale-110 transition"
+          >
+            RR
+          </div>
+          <span className="font-bold text-xl group-hover:text-red-700 transition">
+            Rapid Rescuers
+          </span>
+        </Link>
 
-  {/* Logout Button */}
-  <button
-    onClick={async () => {
-      await signOut(auth);
-      window.location.href = "/auth/login";
-    }}
-    className="px-4 py-2 text-sm font-medium text-red-600 border border-red-600 rounded-lg hover:bg-red-50 transition"
-  >
-    Logout
-  </button>
-</div>
-
-
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
-          Donor Dashboard 🩸
-        </h1>
-        <p className="text-gray-500 mt-1">
-          Thank you for being a lifesaver
-        </p>
+        <button
+          onClick={async () => {
+            await signOut(auth);
+            window.location.href = "/auth/login";
+          }}
+          className="px-4 py-2 text-sm border border-red-600 text-red-600
+                     rounded-lg hover:bg-red-50 transition"
+        >
+          Logout
+        </button>
       </div>
+
+      {/* HEADER */}
+      <header>
+        <h1 className="text-3xl font-bold text-gray-800">Donor Dashboard 🩸</h1>
+        <p className="text-gray-500 mt-1">Every drop matters ❤️</p>
+      </header>
 
       {user && (
         <>
-          {/* Profile Card */}
-          <div className="bg-white rounded-xl shadow p-5 flex flex-col sm:flex-row items-center gap-4">
+          {/* PROFILE */}
+          <section className="bg-white rounded-2xl shadow p-6 flex flex-col sm:flex-row items-center gap-6 hover:shadow-lg transition">
             <div className="flex-1 text-center sm:text-left">
-              <p className="text-lg font-semibold">
+              <h2 className="text-xl font-semibold">
                 {user.name || "Anonymous Donor"}
-              </p>
-
-              <p className="text-gray-600">
+              </h2>
+              <p className="text-gray-600 mt-1">
                 Blood Group:{" "}
                 <span className="font-medium">
-                  {user.bloodGroup || "Not set"} {/* ✅ FIX */}
+                  {user.bloodGroup || "Not set"}
                 </span>
               </p>
-
               {!user.bloodGroup && (
                 <p className="text-sm text-red-500 mt-1">
-                  Please add your blood group
+                  Please update your blood group
                 </p>
               )}
             </div>
 
             <AvailabilityToggle />
-          </div>
+          </section>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
+          {/* STATS */}
+          <section className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <StatCard title="Lives Saved" value="12+" />
             <StatCard title="Requests Seen" value="24" />
             <StatCard
@@ -128,36 +119,45 @@ export default function DonorDashboardPage() {
               value={user.availability ? "Active" : "Offline"}
             />
             <StatCard title="Location" value={location ? "Shared" : "Off"} />
-          </div>
+          </section>
+          {/* DONATION CHART */}
+          <section>
+            <DonationChart />
+          </section>
 
-          {/* Actions */}
-          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* ACTIONS */}
+          <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Link
               href="/map"
-              className="bg-blue-600 text-white py-4 rounded-xl text-center font-semibold hover:bg-blue-700 transition"
+              className="bg-blue-600 text-white py-4 rounded-xl font-semibold
+                         text-center hover:bg-blue-700 transition transform hover:-translate-y-1"
             >
               View Live Requests 🗺️
             </Link>
 
             <Link
               href="/donor/history"
-              className="bg-green-600 text-white py-4 rounded-xl text-center font-semibold hover:bg-green-700 transition"
+              className="bg-green-600 text-white py-4 rounded-xl font-semibold
+                         text-center hover:bg-green-700 transition transform hover:-translate-y-1"
             >
               Donation History 📜
             </Link>
-          </div>
+          </section>
         </>
       )}
     </div>
   );
 }
 
-/* Small reusable stat card */
+/* STAT CARD */
 function StatCard({ title, value }: { title: string; value: string }) {
   return (
-    <div className="bg-white rounded-xl shadow p-4 text-center">
+    <div
+      className="bg-white rounded-2xl shadow p-4 text-center
+                    hover:shadow-lg transition transform hover:-translate-y-1"
+    >
       <p className="text-gray-500 text-sm">{title}</p>
-      <p className="text-xl font-bold mt-1">{value}</p>
+      <p className="text-xl font-bold mt-2">{value}</p>
     </div>
   );
 }

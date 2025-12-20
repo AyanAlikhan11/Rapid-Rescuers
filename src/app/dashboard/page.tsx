@@ -40,11 +40,11 @@ export default function DashboardRouter() {
           break;
 
         case "donor":
-          router.replace("/donor");
+          router.replace("/dashboard/donor");
           break;
 
         case "hospital":
-          router.replace("/hospital");
+          router.replace("/dashboard/hospital");
           break;
 
         case "admin":
