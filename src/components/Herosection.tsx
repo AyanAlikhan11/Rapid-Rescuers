@@ -84,6 +84,48 @@ export default function HeroSection() {
           <Stat title="Lives Saved" value="15,000+" />
           <Stat title="Cities" value="40+" />
         </div>
+        
+        {/* HOW IT WORKS */}
+      <section className="py-20  text-center mt-2">
+        <h2 className="text-3xl font-bold mb-12">How Rapid Rescuers Works</h2>
+
+        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto px-6">
+          {[
+            ["📝 Request Blood", "Submit an emergency blood request in seconds"],
+            ["📍 Get Matched", "Nearby donors & hospitals are instantly notified"],
+            ["❤️ Save Lives", "Fast response helps save precious lives"],
+          ].map(([title, desc]) => (
+            <div
+              key={title}
+              className="p-8 rounded-2xl bg-red-50 hover:bg-red-100 transition-all duration-300 hover:scale-105"
+            >
+              <h3 className="font-semibold text-xl mb-2">{title}</h3>
+              <p className="text-gray-600">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="py-20 bg-red-50 text-center">
+        <h2 className="text-3xl font-bold mb-10">What People Say</h2>
+
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto px-6">
+          {[
+            ["Ayan", "This platform helped us find blood in 10 minutes."],
+            ["Hospital Admin", "Extremely reliable in emergencies."],
+            ["Volunteer", "Easy to use and impactful."],
+          ].map(([name, text]) => (
+            <div
+              key={name}
+              className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition"
+            >
+              <p className="italic text-gray-600 mb-3">“{text}”</p>
+              <p className="font-semibold">{name}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
         {/* Trust line */}
         <p className="mt-10 text-sm text-gray-500">
