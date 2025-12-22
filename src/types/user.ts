@@ -2,7 +2,12 @@ export type UserRole = "user" | "donor" | "hospital" | "admin";
 
 export interface AppUser {
   uid: string;
-  name:string;
+  name: string;
   email: string;
   role: UserRole;
+
+  // optional common fields
+  phone?: string;
+  city?: string;
+  createdAt?: unknown; // Firestore Timestamp
 }
