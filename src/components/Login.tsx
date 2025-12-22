@@ -3,7 +3,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import { auth, db, googleProvider } from "@/lib/firebase";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { useRouter } from "next/navigation";
@@ -21,8 +25,10 @@ export default function LoginPage() {
     email: "",
     password: "",
   });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
   const router = useRouter();
 
@@ -31,6 +37,7 @@ export default function LoginPage() {
      ======================= */
   const handleEmailLogin = async () => {
     setError("");
+    setMessage("");
 
     if (!formData.email || !formData.password) {
       setError("Email and password are required");
@@ -52,7 +59,6 @@ export default function LoginPage() {
         throw new Error("User profile not found");
       }
 
-      // update last login
       await setDoc(
         userRef,
         { lastLogin: serverTimestamp() },
@@ -79,6 +85,7 @@ export default function LoginPage() {
      ======================= */
   const handleGoogleLogin = async () => {
     setError("");
+    setMessage("");
     setLoading(true);
 
     try {
@@ -88,7 +95,6 @@ export default function LoginPage() {
       const userRef = doc(db, "users", user.uid);
       const snap = await getDoc(userRef);
 
-      // New Google user
       if (!snap.exists()) {
         await setDoc(userRef, {
           uid: user.uid,
@@ -104,7 +110,6 @@ export default function LoginPage() {
         return;
       }
 
-      // Existing user
       await setDoc(
         userRef,
         { lastLogin: serverTimestamp() },
@@ -123,6 +128,30 @@ export default function LoginPage() {
       setError(err instanceof Error ? err.message : "Google login failed");
     } finally {
       setLoading(false);
+    }
+  };
+
+  /* =======================
+       FORGOT PASSWORD
+     ======================= */
+  const handleForgotPassword = async () => {
+    setError("");
+    setMessage("");
+
+    if (!formData.email) {
+      setError("Please enter your email to reset password");
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, formData.email);
+      setMessage("Password reset link sent to your email");
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to send reset email"
+      );
     }
   };
 
@@ -145,8 +174,15 @@ export default function LoginPage() {
 
         {/* Error */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-lg mb-5">
+          <div className="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-lg mb-4">
             {error}
+          </div>
+        )}
+
+        {/* Success Message */}
+        {message && (
+          <div className="bg-green-50 border border-green-200 text-green-700 text-sm p-3 rounded-lg mb-4">
+            {message}
           </div>
         )}
 
@@ -171,6 +207,17 @@ export default function LoginPage() {
             }
             className="w-full px-4 py-3 rounded-xl bg-gray-100 focus:ring-2 focus:ring-red-500 focus:outline-none"
           />
+
+          {/* Forgot Password */}
+          <div className="text-right">
+            <button
+              onClick={handleForgotPassword}
+              className="text-sm text-red-600 hover:underline"
+              type="button"
+            >
+              Forgot password?
+            </button>
+          </div>
 
           <button
             onClick={handleEmailLogin}
