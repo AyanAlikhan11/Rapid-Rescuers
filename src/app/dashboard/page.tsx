@@ -36,7 +36,7 @@ export default function DashboardRouter() {
 
       switch (userData.role) {
         case "user":
-          router.replace("/user/dashboard");
+          router.replace("/dashboard/user");
           break;
 
         case "donor":
