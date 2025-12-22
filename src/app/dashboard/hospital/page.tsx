@@ -13,6 +13,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import type { BloodGroup, BloodStock, Hospital } from "@/types/hospital";
 import BloodStockChart from "@/components/charts/BloodStockChart";
 import RequestTrendChart from "@/components/charts/RequestTrendChart";
+import { signOut } from "firebase/auth";
 
 const EMPTY_STOCK: BloodStock = {
   "A+": 0,
@@ -94,6 +95,16 @@ export default function HospitalDashboardPage() {
         <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-medium">
           Active
         </span>
+        <button
+          onClick={async () => {
+            await signOut(auth);
+            window.location.href = "/auth/login";
+          }}
+          className="px-4 py-2 text-sm border border-red-600 text-red-600
+                             rounded-lg hover:bg-red-50 transition"
+        >
+          Logout
+        </button>
       </header>
 
       {/* QUICK STATS */}
