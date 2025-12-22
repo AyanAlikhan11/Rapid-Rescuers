@@ -17,7 +17,7 @@ const ROLE_ROUTES: Record<string, string> = {
   user: "/dashboard/user",
   donor: "/dashboard/donor",
   hospital: "/dashboard/hospital",
-  admin: "/dashboard/admin",
+  admin: "/admin/dashboard",
 };
 
 export default function LoginPage() {
