@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import FCMInitializer from "@/components/FCMInitializer";
+import MobileSOSButton from "@/components/MobileSOSButton";
+// import FCMInitializer from "@/components/FCMInitializer";
 
 
 
@@ -29,10 +30,10 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <FCMInitializer />
+      > 
+        {/* <FCMInitializer /> */} 
         {children}
-        
+        <MobileSOSButton/>
       </body>
     </html>
   );
