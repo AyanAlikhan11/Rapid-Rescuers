@@ -6,6 +6,8 @@ import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
+import DarkModeToggle from "./DarkModeToggle";
+
 
 type UserRole = "user" | "donor" | "hospital" | "admin" | null;
 
@@ -72,6 +74,7 @@ export default function Navbar() {
           <button onClick={() => handleProtectedNav("/hospital")} className="nav-link">
             Hospital
           </button>
+          
 
           {!user ? (
             <>
@@ -97,7 +100,9 @@ export default function Navbar() {
               <button onClick={handleLogout} className="btn-danger">
                 Logout
               </button>
+              
             </>
+            
           )}
         </nav>
 
@@ -126,8 +131,10 @@ export default function Navbar() {
             </Link>
 
             <Link href="/emergency" className="nav-link" onClick={() => setMenuOpen(false)}>
-              SOS
+              SOS 
             </Link>
+           
+
 
             <button
               onClick={() => {
@@ -180,8 +187,11 @@ export default function Navbar() {
                   </button>
                 </>
               )}
+              
             </div>
+            
           </nav>
+          
         </div>
       )}
     </header>
