@@ -174,7 +174,7 @@ export default function DonorDashboardPage() {
   /* ================= UI ================= */
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 sm:px-8 py-6 space-y-8">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-red-100 to-blue-200 px-4 sm:px-8 py-6 space-y-8">
 
       {/* TOP BAR */}
       <div className="flex justify-between items-center">
