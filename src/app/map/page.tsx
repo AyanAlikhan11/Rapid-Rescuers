@@ -203,7 +203,6 @@ export default function MapPage() {
           🚨 SOS
         </button>
       </div>
-
       {/* MAP */}
       <div className="h-[70vh] border rounded-xl overflow-hidden">
         <MapComponent
