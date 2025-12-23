@@ -203,7 +203,7 @@ export default function HospitalDashboardPage() {
   /* ---------------- UI (UNCHANGED) ---------------- */
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 space-y-8">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-red-10 to-red-50 p-6 space-y-8">
       {/* HEADER */}
       <header className="bg-white rounded-2xl shadow p-6 flex justify-between items-center relative">
         <div>
