@@ -110,12 +110,12 @@ export default function UserDashboard() {
   /* ================= UI ================= */
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 flex">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-red-100 to-blue-200 text-gray-900 flex">
       {/* ===== SIDEBAR ===== */}
-      <aside className="w-64 hidden md:flex flex-col justify-between border-r border-red-100 p-6">
+      <aside className="w-64 hidden md:flex flex-col justify-between border-r-2 border-red-300 p-6 ">
         <div>
-          <h2 className="text-2xl font-bold text-red-600 mb-10">
-            🩸 Rapid Rescuers
+          <h2 className="text-2xl font-bold text-red-600 mb-10 ">
+            🩸Rapid Rescuers
           </h2>
 
           <nav className="space-y-4 font-medium">
