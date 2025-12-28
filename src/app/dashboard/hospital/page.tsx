@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -203,8 +204,10 @@ export default function HospitalDashboardPage() {
   /* ---------------- UI (UNCHANGED) ---------------- */
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-red-10 to-red-50 p-6 space-y-8">
+    
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-red-10 to-red-30 p-6 space-y-8">
       {/* HEADER */}
+      
       <header className="bg-white rounded-2xl shadow p-6 flex justify-between items-center relative">
         <div>
           <h1 className="text-2xl font-bold text-green-700">
@@ -212,7 +215,6 @@ export default function HospitalDashboardPage() {
           </h1>
           <p className="text-sm text-gray-500">Hospital Dashboard</p>
         </div>
-
         {/* Hamburger */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
@@ -304,15 +306,32 @@ export default function HospitalDashboardPage() {
       </section>
 
       {/* BLOOD STOCK */}
-      <section className="bg-white rounded-2xl shadow p-6">
+      <section
+  className="
+    rounded-2xl 
+    p-6
+    bg-white/80
+    border border-white/60
+    shadow-lg
+
+    transition-all duration-300 ease-out
+
+    hover:-translate-y-3
+    hover:bg-red-50
+    hover:border-red-200
+    hover:shadow-[0_25px_60px_rgba(220,38,38,0.25)]
+  "
+>
+
+
         <h2 className="text-lg font-semibold text-green-700 mb-4">
           🩸 Blood Stock
         </h2>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 ">
           {(Object.keys(stock) as BloodGroup[]).map((group) => (
             <div key={group} className="border rounded-lg p-3">
-              <p className="font-semibold">{group}</p>
+              <p className="font-semibold text-red-500">{group}</p>
               <input
                 type="number"
                 min={0}
@@ -343,3 +362,9 @@ export default function HospitalDashboardPage() {
     </div>
   );
 }
+
+
+
+
+
+

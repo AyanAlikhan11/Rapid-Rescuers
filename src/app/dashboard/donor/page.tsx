@@ -23,6 +23,7 @@ import DonationChart from "@/components/charts/DonationChart";
 import { Timestamp } from "firebase/firestore";
 
 
+
 /* ================= TYPES ================= */
 
 type DonorUser = {
@@ -188,7 +189,7 @@ export default function DonorDashboardPage() {
             Rapid Rescuers
           </span>
         </Link>
-
+        
         <button
           onClick={async () => {
             await signOut(auth);

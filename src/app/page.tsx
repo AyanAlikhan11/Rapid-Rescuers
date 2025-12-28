@@ -10,6 +10,7 @@ import HowItWorks from "@/components/HowItWorks";
 import PartnerHospitals from "@/components/partnershospital";
 
 
+
 export default function Home() {
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -22,6 +23,7 @@ export default function Home() {
 <Testimonials />
 <EmergencyCTA />
 <Footer />
+
 </div>
 
   );

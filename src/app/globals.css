@@ -16,6 +16,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #f8c5c5;
+    
     --foreground: #040404;
   }
 } 
@@ -28,6 +29,21 @@
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+@keyframes slide-in {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
 
 .animate-fadeIn {
   animation: fadeIn 0.8s ease-out forwards;
@@ -110,3 +126,11 @@ body {
   animation-duration: 10s;
   background: rgba(255, 0, 0, 0.6);
 }
+.glass {
+  @apply bg-white/80 backdrop-blur-xl shadow-xl border border-white/30;
+}
+
+.input-red {
+  @apply w-full rounded-xl px-4 py-3 border focus:ring-2 focus:ring-red-400 outline-none;
+}
+

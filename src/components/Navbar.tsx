@@ -67,7 +67,7 @@ export default function Navbar() {
         <nav className="hidden md:flex items-center gap-6">
           <Link href="/map" className="nav-link">Map</Link>
           <Link href="/emergency" className="nav-link">SOS</Link>
-
+          
           <button onClick={() => handleProtectedNav("/donor")} className="nav-link">
             Donor
           </button>
