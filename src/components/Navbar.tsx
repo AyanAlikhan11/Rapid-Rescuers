@@ -78,7 +78,7 @@ export default function Navbar() {
 
           {!user ? (
             <>
-              {/* <Link href="/auth/signup" className="btn-primary">Sign Up</Link> */}
+              <Link href="/auth/signup" className="btn-primary">Sign Up</Link>
               <Link href="/auth/login" className="btn-primary">Login</Link>
             </>
           ) : (
@@ -159,9 +159,9 @@ export default function Navbar() {
             <div className="border-t pt-4 flex flex-col gap-3">
               {!user ? (
                 <>
-                  {/* <Link href="/auth/signup" className="btn-primary text-center">
+                  <Link href="/auth/signup" className="btn-primary text-center">
                     Sign Up
-                  </Link> */}
+                  </Link>
                   <Link href="/auth/login" className="btn-primary text-center">
                     Login
                   </Link>
