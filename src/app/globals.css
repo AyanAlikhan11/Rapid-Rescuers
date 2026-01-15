@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -16,34 +15,30 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #f8c5c5;
-    
     --foreground: #040404;
   }
-} 
+}
+
+/* ================= Animations ================= */
+
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
 @keyframes slide-in {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 .animate-slide-in {
   animation: slide-in 0.3s ease-out;
 }
-
 
 .animate-fadeIn {
   animation: fadeIn 0.8s ease-out forwards;
@@ -53,20 +48,30 @@
   animation: slideUp 0.8s ease-out forwards;
 }
 
-.animation-delay-200 {
-  animation-delay: 0.2s;
-}
+.animation-delay-200 { animation-delay: 0.2s; }
+.animation-delay-300 { animation-delay: 0.3s; }
 
-.animation-delay-300 {
-  animation-delay: 0.3s;
-}
+/* ================= Navigation ================= */
+
 .nav-link {
   @apply text-sm font-medium text-gray-700 hover:text-red-600 transition relative;
 }
 
+/* ================= Buttons ================= */
+
 .btn-primary {
-  @apply px-4 py-2 rounded-lg bg-red-600 text-white text-sm
-         hover:bg-red-700 transition shadow;
+  @apply px-4 py-2 rounded-lg text-white text-sm transition shadow;
+  background: linear-gradient(135deg, #f01b37 0%, #ff2353 100%);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(225, 29, 72, 0.35);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .btn-outline {
@@ -79,18 +84,23 @@
          hover:bg-black transition;
 }
 
+/* ================= Base ================= */
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
 html,
 body {
   width: 100%;
   min-height: 100%;
   overflow-x: hidden;
 }
+
+/* ================= Blood Animation ================= */
+
 .blood-cell {
   position: absolute;
   bottom: -100px;
@@ -104,33 +114,103 @@ body {
   animation-iteration-count: infinite;
 }
 
-/* Dark mode */
 .dark .blood-cell {
   background: rgba(255, 90, 90, 0.4);
 }
 
 @keyframes floatUp {
-  0% {
-    transform: translateY(0) scale(0.8);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-120vh) scale(1.2);
-    opacity: 0;
-  }
+  0% { transform: translateY(0) scale(0.8); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateY(-120vh) scale(1.2); opacity: 0; }
 }
+
 .emergency .blood-cell {
   animation-duration: 10s;
   background: rgba(255, 0, 0, 0.6);
 }
+
+/* ================= Glass UI ================= */
+
 .glass {
   @apply bg-white/80 backdrop-blur-xl shadow-xl border border-white/30;
 }
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(178, 18, 38, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* ================= Inputs ================= */
 
 .input-red {
   @apply w-full rounded-xl px-4 py-3 border focus:ring-2 focus:ring-red-400 outline-none;
 }
 
+/* ================= Upload ================= */
+
+.upload-area {
+  border: 2px dashed #dc2626;
+  transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+  border-color: #b11226;
+  background: #fef2f2;
+}
+
+/* ================= Status ================= */
+
+.status-badge {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-verified {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+/* ================= Loader ================= */
+
+.loader {
+  border: 3px solid #f3f4f6;
+  border-top: 3px solid #dc2626;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ================= Progress ================= */
+
+.step-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin: 0 auto;
+}
+
+.progress-step.active .step-circle {
+  background: linear-gradient(135deg, #b11226 0%, #e11d48 100%);
+  color: white;
+}

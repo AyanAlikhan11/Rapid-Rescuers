@@ -13,6 +13,7 @@ import PartnerHospitals from "@/components/partnershospital";
 
 export default function Home() {
   return (
+    <section>
     <div className="relative min-h-screen overflow-hidden">
     <FloatingBloodCells/>
 <Navbar />
@@ -23,8 +24,8 @@ export default function Home() {
 <Testimonials />
 <EmergencyCTA />
 <Footer />
-
 </div>
+</section>
 
   );
 }

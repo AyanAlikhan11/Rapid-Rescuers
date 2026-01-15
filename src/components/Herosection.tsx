@@ -1,10 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { auth } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import FloatingBloodCells from "./FloatingBloodCells";
+import { doc, getDoc } from "firebase/firestore";
+
 
 
 // import Snowfall from "react-snowfall";
@@ -29,13 +31,41 @@ export default function HeroSection() {
     }
   };
 
-  const handleBecomeDonor = () => {
-    if (!loggedIn) {
-      router.push("/auth/become-donor");
-    } else {
-      router.push("/dashboard/donor");
+  const handleBecomeDonor = async () => {
+  const user = auth.currentUser;
+
+  // 1️⃣ Not logged in → signup/login
+  if (!user) {
+    router.push("/auth/signup");
+    return;
+  }
+
+  try {
+    // 2️⃣ Fetch user role
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      alert("User data not found");
+      return;
     }
-  };
+
+    const { role } = userSnap.data();
+
+    // 3️⃣ Hospital check
+    if (role === "hospital") {
+      alert("❌ Hospital accounts cannot become donors");
+      return;
+    }
+
+    // 4️⃣ Logged-in normal user → donor verification
+    router.push("/auth/donorveif");
+
+  } catch (error) {
+    console.error(error);
+    alert("Something went wrong. Try again.");
+  }
+};
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-white to-red-50 py-24 px-4">
