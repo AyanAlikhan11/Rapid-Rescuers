@@ -59,7 +59,7 @@ export default function HeroSection() {
     }
 
     // 4️⃣ Logged-in normal user → donor verification
-    router.push("/auth/donorveif");
+    router.push("/auth/become-donor");
 
   } catch (error) {
     console.error(error);

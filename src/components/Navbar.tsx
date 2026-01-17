@@ -6,7 +6,7 @@ import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
-import DarkModeToggle from "./DarkModeToggle";
+
 
 
 type UserRole = "user" | "donor" | "hospital" | "admin" | null;
@@ -68,10 +68,10 @@ export default function Navbar() {
           <Link href="/map" className="nav-link">Map</Link>
           <Link href="/emergency" className="nav-link">SOS</Link>
           
-          <button onClick={() => handleProtectedNav("/donor")} className="nav-link">
+          <button onClick={() => handleProtectedNav("/auth/become-donor")} className="nav-link">
             Donor
           </button>
-          <button onClick={() => handleProtectedNav("/hospital")} className="nav-link">
+          <button onClick={() => handleProtectedNav("/PartnerHospitals")} className="nav-link">
             Hospital
           </button>
           
@@ -138,7 +138,7 @@ export default function Navbar() {
 
             <button
               onClick={() => {
-                handleProtectedNav("/donor");
+                handleProtectedNav("/auth/become-donor");
                 setMenuOpen(false);
               }}
               className="nav-link text-left"
