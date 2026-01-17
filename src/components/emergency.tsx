@@ -62,17 +62,17 @@ export default function EmergencyPage() {
     }
 
     setSubmitting(true);
-    setSuccess(false);
     setError(null);
+    setSuccess(false);
 
     try {
-      await addDoc(collection(db, "sosAlerts"), {
-        bloodGroup,
-        location,               // lat + lng
-        city: "Live Location",  // can be replaced with reverse-geocode later
-        senderId: auth.currentUser.uid,
-        senderName: auth.currentUser.displayName ?? "Unknown",
-        status: "pending",
+      // 🔥 CREATE ALERT (this is what dashboards listen to)
+      await addDoc(collection(db, "alerts"), {
+        bloodGroupNeeded: bloodGroup,
+        requestedBy: auth.currentUser.uid,
+        requesterName: auth.currentUser.displayName ?? "Unknown",
+        location,
+        status: "open",              // 🚨 VERY IMPORTANT
         createdAt: serverTimestamp(),
       });
 
@@ -92,6 +92,7 @@ export default function EmergencyPage() {
         <h1 className="text-2xl font-bold text-red-600 mb-2">
           🚨 Emergency Blood Alert
         </h1>
+
         <p className="text-gray-600 text-sm mb-4">
           Use this only in real emergencies.
         </p>
@@ -99,7 +100,7 @@ export default function EmergencyPage() {
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4 text-sm">
           <ul className="list-disc pl-5 space-y-1">
             <li>Your live location will be shared</li>
-            <li>Nearby hospitals & donors notified</li>
+            <li>Nearby donors & hospitals notified</li>
             <li>False alerts may restrict your account</li>
           </ul>
         </div>
@@ -139,7 +140,7 @@ export default function EmergencyPage() {
 
         {success && (
           <p className="text-green-600 text-sm mt-4 text-center font-medium">
-            ✅ SOS sent successfully. Help is on the way.
+            ✅ SOS sent successfully. Donors & hospitals notified.
           </p>
         )}
 
