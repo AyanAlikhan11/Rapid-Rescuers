@@ -46,27 +46,29 @@ const testimonials: Testimonial[] = [
 export default function Testimonials() {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<number | null>(null);
 
   const t = testimonials[index];
   const isVideo = t.media.endsWith(".mp4");
   const imageOnLeft = index % 2 === 0;
 
-  // 🔁 Auto slide (pause aware)
+  /* 🔁 Auto Slide */
   useEffect(() => {
     if (paused) return;
 
-    timeoutRef.current = setTimeout(() => {
+    timeoutRef.current = window.setTimeout(() => {
       setIndex((prev) => (prev + 1) % testimonials.length);
     }, 5000);
 
     return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (timeoutRef.current !== null) {
+        clearTimeout(timeoutRef.current);
+      }
     };
   }, [index, paused]);
 
-  // 📱 Swipe handling
-  const handleDragEnd = (_: any, info: PanInfo) => {
+  /* 📱 Swipe Support */
+  const handleDragEnd = (_: unknown, info: PanInfo) => {
     if (info.offset.x < -100) {
       setIndex((prev) => (prev + 1) % testimonials.length);
     } else if (info.offset.x > 100) {
@@ -80,7 +82,9 @@ export default function Testimonials() {
     <section className="py-24 bg-gradient-to-b from-red-50 to-white">
       {/* Heading */}
       <div className="text-center mb-16">
-        <h2 className="text-4xl font-bold text-gray-900 mb-4">What People Say</h2>
+        <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          What People Say
+        </h2>
         <p className="text-gray-500 max-w-2xl mx-auto">
           Trusted voices from real users & hospitals across India.
         </p>
@@ -99,11 +103,9 @@ export default function Testimonials() {
             transition={{ duration: 0.3 }}
             onMouseEnter={() => setPaused(true)}
             onMouseLeave={() => setPaused(false)}
-            className={`grid md:grid-cols-2 items-center gap-10 bg-white rounded-3xl shadow-xl overflow-hidden ${
-              imageOnLeft ? "" : "md:flex-row-reverse"
-            }`}
+            className="grid md:grid-cols-2 items-center gap-10 bg-white rounded-3xl shadow-xl overflow-hidden"
           >
-            {/* IMAGE / VIDEO */}
+            {/* MEDIA */}
             <div
               className={`relative h-[320px] md:h-full w-full ${
                 imageOnLeft ? "md:order-1" : "md:order-2"
@@ -123,6 +125,7 @@ export default function Testimonials() {
                   src={t.media}
                   alt={t.name}
                   fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover"
                   priority
                 />
@@ -136,7 +139,11 @@ export default function Testimonials() {
             </div>
 
             {/* CONTENT */}
-            <div className={`p-10 ${imageOnLeft ? "md:order-2" : "md:order-1"}`}>
+            <div
+              className={`p-10 ${
+                imageOnLeft ? "md:order-2" : "md:order-1"
+              }`}
+            >
               <ChatBubbleLeftRightIcon className="w-8 h-8 text-red-500 mb-4" />
 
               <p className="text-lg italic text-gray-600 mb-6 leading-relaxed">
@@ -151,7 +158,9 @@ export default function Testimonials() {
               </div>
 
               <div className="flex items-center gap-2">
-                <p className="font-semibold text-gray-900 text-lg">{t.name}</p>
+                <p className="font-semibold text-gray-900 text-lg">
+                  {t.name}
+                </p>
                 {t.verified && (
                   <CheckBadgeIcon
                     className="w-5 h-5 text-blue-500"
