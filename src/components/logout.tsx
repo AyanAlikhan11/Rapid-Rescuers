@@ -14,7 +14,7 @@ export default function LogoutPage() {
 
       // Small delay for better UX
       setTimeout(() => {
-        router.push("/auth/login");
+        router.push("/");
       }, 2000);
     };
 
