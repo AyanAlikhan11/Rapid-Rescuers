@@ -2,7 +2,7 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// 🔐 Firebase config (env-based)
+// Firebase config (env-based)
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
@@ -12,17 +12,17 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
 };
 
-// ✅ Prevent re-initialization in Next.js
+//Prevent re-initialization in Next.js
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
-// 🔑 Firebase services
+//Firebase services
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-// 🌐 Google Auth Provider
+//Google Auth Provider
 export const googleProvider = new GoogleAuthProvider();
 
-// Optional but recommended
+
 googleProvider.setCustomParameters({
   prompt: "select_account",
 });

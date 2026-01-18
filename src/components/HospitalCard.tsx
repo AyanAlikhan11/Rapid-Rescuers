@@ -1,4 +1,4 @@
-// /components/HospitalCard.tsx
+
 import type { Hospital, BloodGroup } from "@/types/hospital";
 
 interface HospitalCardProps {

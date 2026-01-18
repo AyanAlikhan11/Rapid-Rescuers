@@ -7,7 +7,7 @@ import { BellAlertIcon } from "@heroicons/react/24/solid";
 export default function MobileSOSButton() {
   const pathname = usePathname();
 
-  // ❌ Do not show on emergency page
+
   if (pathname === "/emergency") return null;
 
   return (

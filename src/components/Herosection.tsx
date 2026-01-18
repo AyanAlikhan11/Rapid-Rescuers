@@ -9,8 +9,6 @@ import { doc, getDoc } from "firebase/firestore";
 
 
 
-// import Snowfall from "react-snowfall";
-
 
 export default function HeroSection() {
   const router = useRouter();
@@ -34,14 +32,14 @@ export default function HeroSection() {
   const handleBecomeDonor = async () => {
   const user = auth.currentUser;
 
-  // 1️⃣ Not logged in → signup/login
+  
   if (!user) {
     router.push("/auth/signup");
     return;
   }
 
   try {
-    // 2️⃣ Fetch user role
+    
     const userRef = doc(db, "users", user.uid);
     const userSnap = await getDoc(userRef);
 
@@ -52,13 +50,13 @@ export default function HeroSection() {
 
     const { role } = userSnap.data();
 
-    // 3️⃣ Hospital check
+    
     if (role === "hospital") {
       alert("❌ Hospital accounts cannot become donors");
       return;
     }
 
-    // 4️⃣ Logged-in normal user → donor verification
+    
     router.push("/auth/become-donor");
 
   } catch (error) {

@@ -40,7 +40,7 @@ export default function Signup() {
       return;
     }
 
-    // ✅ Donor blood group validation
+    // Donor blood group validation
     if (form.role === "donor" && !form.bloodGroup) {
       setError("Please select your blood group");
       return;
@@ -168,7 +168,7 @@ export default function Signup() {
             <option value="admin">Admin</option>
           </select>
 
-          {/* ✅ Blood Group (Donor Only) */}
+          {/* Blood Group (Donor Only) */}
           {form.role === "donor" && (
             <select
               value={form.bloodGroup}

@@ -1,4 +1,4 @@
-// /lib/fcm.ts
+
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "./firebase";

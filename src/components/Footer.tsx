@@ -10,7 +10,7 @@ export default function Footer() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 👉 Here you can send data to Firebase / API
+    
     console.log({ name, feedback });
 
     setShowPopup(true);

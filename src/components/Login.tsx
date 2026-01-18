@@ -80,9 +80,7 @@ export default function LoginPage() {
     }
   };
 
-  /* =======================
-        GOOGLE LOGIN
-     ======================= */
+  /*GOOGLE LOGIN*/
   const handleGoogleLogin = async () => {
     setError("");
     setMessage("");
@@ -131,9 +129,7 @@ export default function LoginPage() {
     }
   };
 
-  /* =======================
-       FORGOT PASSWORD
-     ======================= */
+  /* FORGOT PASSWORD */
   const handleForgotPassword = async () => {
     setError("");
     setMessage("");

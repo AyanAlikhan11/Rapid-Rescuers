@@ -1,4 +1,4 @@
-// /components/DonorCard.tsx
+
 import React from "react";
 
 type Donor = {

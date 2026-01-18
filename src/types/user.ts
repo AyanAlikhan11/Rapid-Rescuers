@@ -6,8 +6,8 @@ export interface AppUser {
   email: string;
   role: UserRole;
 
-  // optional common fields
+ 
   phone?: string;
   city?: string;
-  createdAt?: unknown; // Firestore Timestamp
+  createdAt?: unknown; 
 }

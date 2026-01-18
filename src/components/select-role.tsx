@@ -5,7 +5,6 @@ import { doc, updateDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 
-/* -------------------- CONSTANTS -------------------- */
 
 const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"] as const;
 
@@ -19,7 +18,6 @@ type UserUpdatePayload = {
   availability?: boolean;
 };
 
-/* -------------------- COMPONENT -------------------- */
 
 export default function SelectRolePage() {
   const router = useRouter();
@@ -31,7 +29,7 @@ export default function SelectRolePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  /* -------------------- SAVE ROLE -------------------- */
+  /*SAVE ROLE */
 
   const saveRole = async () => {
     setError(null);
@@ -42,7 +40,7 @@ export default function SelectRolePage() {
       return;
     }
 
-    // 🚫 Donor must select blood group
+    
     if (selectedRole === "donor" && !bloodGroup) {
       setError("Blood group is required for donors.");
       return;
@@ -57,13 +55,13 @@ export default function SelectRolePage() {
       };
 
       if (selectedRole === "donor") {
-        payload.bloodGroup = bloodGroup; // ✅ now type-safe
+        payload.bloodGroup = bloodGroup; 
         payload.availability = false;
       }
 
       await updateDoc(doc(db, "users", user.uid), payload);
 
-      // Dashboards handle routing by role
+      
       router.replace("/dashboard");
     } catch (err) {
       console.error(err);
@@ -73,7 +71,7 @@ export default function SelectRolePage() {
     }
   };
 
-  /* -------------------- UI -------------------- */
+  /* UI */
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">

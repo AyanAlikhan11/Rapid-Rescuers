@@ -1,4 +1,4 @@
-// /components/FCMInitializer.tsx
+
 "use client";
 import { useEffect } from "react";
 import { initFCMAndSaveToken, registerOnMessageHandler } from "../lib/fcm";

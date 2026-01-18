@@ -10,7 +10,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 
-/* ================= TYPES ================= */
+/*TYPES */
 
 type Location = {
   lat: number;
@@ -28,7 +28,7 @@ type Marker = {
 
 type FilterType = "all" | "hospital" | "donor";
 
-/* ================= PAGE ================= */
+/* PAGE */
 
 export default function MapPage() {
   const [allMarkers, setAllMarkers] = useState<Marker[]>([]);
@@ -39,7 +39,7 @@ export default function MapPage() {
   const [city, setCity] = useState("");
   const [satellite, setSatellite] = useState(false);
 
-  /* ================= FETCH DATA ================= */
+  /*FETCH DATA*/
 
   useEffect(() => {
     const load = async () => {
@@ -90,7 +90,7 @@ export default function MapPage() {
     );
   }, []);
 
-  /* ================= DISTANCE ================= */
+  /*  DISTANCE */
 
   const distanceKm = (a: Location, b: Location) => {
     const R = 6371;
@@ -104,7 +104,7 @@ export default function MapPage() {
     return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
   };
 
-  /* ================= FILTER ================= */
+  /* FILTER */
 
   const filtered = useMemo(() => {
     return allMarkers.filter((m) => {
@@ -116,7 +116,7 @@ export default function MapPage() {
     });
   }, [allMarkers, filter, blood, city]);
 
-  /* ================= NEAREST HOSPITAL ================= */
+  /*  NEAREST HOSPITAL */
 
   const nearestHospital = useMemo(() => {
     if (!userLoc) return null;
@@ -131,7 +131,7 @@ export default function MapPage() {
     );
   }, [filtered, userLoc]);
 
-  /* ================= SOS ================= */
+  /* SOS*/
 
   const sendSOS = async () => {
     if (!userLoc) return alert("Location needed");
@@ -145,7 +145,7 @@ export default function MapPage() {
     alert("🚨 SOS sent successfully");
   };
 
-  /* ================= UI ================= */
+  /* UI */
 
   return (
     <div className="p-4 space-y-4">

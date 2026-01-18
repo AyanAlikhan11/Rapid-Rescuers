@@ -14,7 +14,7 @@ type Testimonial = {
   name: string;
   role: string;
   message: string;
-  media: string; // image or video
+  media: string; 
   verified?: boolean;
 };
 
@@ -52,7 +52,7 @@ export default function Testimonials() {
   const isVideo = t.media.endsWith(".mp4");
   const imageOnLeft = index % 2 === 0;
 
-  /* 🔁 Auto Slide */
+  /*Auto Slide */
   useEffect(() => {
     if (paused) return;
 
@@ -67,7 +67,7 @@ export default function Testimonials() {
     };
   }, [index, paused]);
 
-  /* 📱 Swipe Support */
+  /* Swipe Support */
   const handleDragEnd = (_: unknown, info: PanInfo) => {
     if (info.offset.x < -100) {
       setIndex((prev) => (prev + 1) % testimonials.length);

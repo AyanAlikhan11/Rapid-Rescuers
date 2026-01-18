@@ -18,9 +18,7 @@ export default function EmergencyPage() {
   const [error, setError] = useState<string | null>(null);
   const [location, setLocation] = useState<LocationCoords | null>(null);
 
-  /* ======================
-     REQUEST LOCATION
-     ====================== */
+  /* REQUEST LOCATION*/
   const requestLocationAccess = async () => {
     setError(null);
 
@@ -47,9 +45,7 @@ export default function EmergencyPage() {
     }
   };
 
-  /* ======================
-        SEND SOS
-     ====================== */
+  /* SEND SOS*/
   const handleSOS = async () => {
     if (!auth.currentUser) {
       setError("You must be logged in");
@@ -66,13 +62,13 @@ export default function EmergencyPage() {
     setSuccess(false);
 
     try {
-      // 🔥 CREATE ALERT (this is what dashboards listen to)
+     
       await addDoc(collection(db, "alerts"), {
         bloodGroupNeeded: bloodGroup,
         requestedBy: auth.currentUser.uid,
         requesterName: auth.currentUser.displayName ?? "Unknown",
         location,
-        status: "open",              // 🚨 VERY IMPORTANT
+        status: "open",              
         createdAt: serverTimestamp(),
       });
 

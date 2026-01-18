@@ -12,7 +12,6 @@ export default function LogoutPage() {
     const logout = async () => {
       await signOut(auth);
 
-      // Small delay for better UX
       setTimeout(() => {
         router.push("/");
       }, 2000);
