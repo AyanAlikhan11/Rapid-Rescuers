@@ -1,4 +1,3 @@
-
 "use client";
 import { useEffect, useState } from "react";
 import { auth, db } from "../lib/firebase";
@@ -81,4 +80,3 @@ export default function AvailabilityToggle() {
     </button>
   );
 }
-
